@@ -1,0 +1,4 @@
+.env
+tmp/
+__debug_bin
+serviceAccountKey.json

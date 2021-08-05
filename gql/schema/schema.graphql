@@ -1,0 +1,35 @@
+type Query {
+    admins: [Admin!]!
+}
+
+type Mutation {
+    createAdmin(input: NewAdmin!): Admin!
+    loginAdmin(input: AdminLogin!): String!
+}
+
+scalar Time
+
+type Admin {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String!
+  password: String!
+  avatar: String
+  role: String!
+  createdAt: Time
+  updatedAt: Time
+}
+
+input NewAdmin {
+  name: String!
+  email: String!
+  phone: String!
+  password: String!
+  role: String!
+}
+
+input AdminLogin {
+  email: String!
+  password: String!
+}
