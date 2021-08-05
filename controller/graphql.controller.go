@@ -6,6 +6,7 @@ import (
 	"go-graphql-api/gql/generated"
 	"go-graphql-api/gql/resolver"
 	"go-graphql-api/infrastructure"
+	"go-graphql-api/middleware"
 	"go-graphql-api/package/admin"
 
 	"github.com/99designs/gqlgen/handler"
@@ -15,25 +16,28 @@ import (
 
 // GraphQLController handle the graphql request, parse request to schema and return results
 type GraphQLController struct {
-	admin  admin.Service
-	logger infrastructure.Logger
-	env    infrastructure.Env
+	admin          admin.Service
+	logger         infrastructure.Logger
+	env            infrastructure.Env
+	authMiddleware middleware.AuthMiddleware
 }
 
 // GraphQLControllerTarget is parameter object for geting all GraphQLController's dependency
 type GraphQLControllerTarget struct {
 	fx.In
-	Admin  admin.Service
-	Logger infrastructure.Logger
-	Env    infrastructure.Env
+	Admin          admin.Service
+	Logger         infrastructure.Logger
+	Env            infrastructure.Env
+	AuthMiddleware middleware.AuthMiddleware
 }
 
 // NewGraphQLController is a constructor for GraphQLController
 func NewGraphQLController(target GraphQLControllerTarget) GraphQLController {
 	return GraphQLController{
-		admin:  target.Admin,
-		logger: target.Logger,
-		env:    target.Env,
+		admin:          target.Admin,
+		logger:         target.Logger,
+		env:            target.Env,
+		authMiddleware: target.AuthMiddleware,
 	}
 }
 
@@ -57,7 +61,9 @@ func (m *GraphQLController) GraphiQLHandler() gin.HandlerFunc {
 
 // Register is function to register all controller's endpoint handler
 func (m *GraphQLController) Register(r *gin.Engine) {
-	r.Use(m.Middleware()).POST("/query", m.GrqphQLHandler())
+	r.Use(m.Middleware()).
+		Use(m.authMiddleware.HandleAuth()).
+		POST("/query", m.GrqphQLHandler())
 	r.GET("/", m.GraphiQLHandler())
 }
 

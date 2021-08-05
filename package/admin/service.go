@@ -22,7 +22,7 @@ type Service interface {
 
 	RegisterAdmin(ctx context.Context, admin *model.Admin) (*model.Admin, error)
 	VerifyAdmin(ctx context.Context, adminLogin *model.AdminLogin) (*model.Admin, error)
-	GetAccessToken(ctx context.Context, admin *model.Admin) (*string, error)
+	GenerateAccessToken(ctx context.Context, admin *model.Admin) (*string, error)
 }
 
 // ForContext is method to get admin service from context

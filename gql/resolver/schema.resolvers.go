@@ -36,7 +36,20 @@ func (r *mutationResolver) CreateAdmin(ctx context.Context, input generated.NewA
 }
 
 func (r *mutationResolver) LoginAdmin(ctx context.Context, input generated.AdminLogin) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	loginCredentials := model.AdminLogin{
+		Email:    input.Email,
+		Password: input.Password,
+	}
+	adminService := admin.ForContext(ctx)
+	admin, err := adminService.VerifyAdmin(ctx, &loginCredentials)
+	if err != nil {
+		return "", err
+	}
+	tokenString, err := adminService.GenerateAccessToken(ctx, admin)
+	if err != nil {
+		return "", err
+	}
+	return *tokenString, nil
 }
 
 func (r *queryResolver) Admins(ctx context.Context) ([]*model.Admin, error) {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"go-graphql-api/controller"
 	"go-graphql-api/infrastructure"
+	"go-graphql-api/middleware"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/fx"
@@ -15,7 +16,10 @@ var Module = fx.Options(
 	ServiceModule,
 	RepositoryModule,
 	InfrastructureModule,
-	fx.Provide(controller.NewGraphQLController),
+	fx.Provide(
+		controller.NewGraphQLController,
+		middleware.NewAuthMiddleware,
+	),
 	fx.Invoke(bootstrap),
 )
 

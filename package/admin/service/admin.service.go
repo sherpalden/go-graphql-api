@@ -59,7 +59,7 @@ func (as *adminService) VerifyAdmin(ctx context.Context, adminLogin *model.Admin
 	return admin, err
 }
 
-func (as *adminService) GetAccessToken(ctx context.Context, admin *model.Admin) (*string, error) {
+func (as *adminService) GenerateAccessToken(ctx context.Context, admin *model.Admin) (*string, error) {
 	// Create the token
 	token := jwt.New(jwt.GetSigningMethod("HS256"))
 	claims := token.Claims.(jwt.MapClaims)
