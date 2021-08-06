@@ -1,4 +1,4 @@
-package middleware
+package auth
 
 import (
 	"context"
@@ -54,14 +54,30 @@ func (m AuthMiddleware) HandleAuth() gin.HandlerFunc {
 			return
 		}
 		claims := token.Claims.(jwt.MapClaims)
+		id, ok := claims["id"].(string)
+		if !ok {
+			c.Abort()
+			m.logger.Zap.Info("Claims['id'] assertion error")
+		}
+		role, ok := claims["role"].(string)
+		if !ok {
+			c.Abort()
+			m.logger.Zap.Info("Claims['role'] assertion error")
+		}
 		authSession := AuthSession{
-			ID:   claims["id"],
-			Role: claims["role"],
+			ID:   id,
+			Role: role,
 		}
 		ctx := context.WithValue(c.Request.Context(), constant.Session, &authSession)
 		c.Request = c.Request.WithContext(ctx)
-		c.Writer = &authSession
+		// c.Writer = &authSession
 		c.Next()
 		return
 	}
+}
+
+// ForContext finds the user from the context. REQUIRES Middleware to have run.
+func ForContext(ctx context.Context) *AuthSession {
+	raw, _ := ctx.Value(constant.Session).(*AuthSession)
+	return raw
 }

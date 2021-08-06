@@ -6,7 +6,7 @@ import (
 	"go-graphql-api/gql/generated"
 	"go-graphql-api/gql/resolver"
 	"go-graphql-api/infrastructure"
-	"go-graphql-api/middleware"
+	"go-graphql-api/middleware/auth"
 	"go-graphql-api/package/admin"
 
 	"github.com/99designs/gqlgen/handler"
@@ -19,7 +19,7 @@ type GraphQLController struct {
 	admin          admin.Service
 	logger         infrastructure.Logger
 	env            infrastructure.Env
-	authMiddleware middleware.AuthMiddleware
+	authMiddleware auth.AuthMiddleware
 }
 
 // GraphQLControllerTarget is parameter object for geting all GraphQLController's dependency
@@ -28,7 +28,7 @@ type GraphQLControllerTarget struct {
 	Admin          admin.Service
 	Logger         infrastructure.Logger
 	Env            infrastructure.Env
-	AuthMiddleware middleware.AuthMiddleware
+	AuthMiddleware auth.AuthMiddleware
 }
 
 // NewGraphQLController is a constructor for GraphQLController

@@ -5,8 +5,10 @@ package resolver
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"go-graphql-api/gql/generated"
+	"go-graphql-api/middleware/auth"
 	"go-graphql-api/model"
 	"go-graphql-api/package/admin"
 	"time"
@@ -53,6 +55,9 @@ func (r *mutationResolver) LoginAdmin(ctx context.Context, input generated.Admin
 }
 
 func (r *queryResolver) Admins(ctx context.Context) ([]*model.Admin, error) {
+	if authSession := auth.ForContext(ctx); authSession.Role != "super-admin" {
+		return nil, errors.New("Access Denied")
+	}
 	admins, err := admin.ForContext(ctx).GetAll(ctx)
 	if err != nil {
 		return nil, err
