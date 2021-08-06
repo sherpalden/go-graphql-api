@@ -48,12 +48,14 @@ func (as *adminService) RegisterAdmin(ctx context.Context, admin *model.Admin) (
 }
 
 func (as *adminService) VerifyAdmin(ctx context.Context, adminLogin *model.AdminLogin) (*model.Admin, error) {
-	admin, err := as.repository.GetByEmail(adminLogin.Email)
-	if err != nil {
-		return nil, err
+	admin, _ := as.repository.GetByEmail(adminLogin.Email)
+	if admin == nil {
+		as.logger.Zap.Info("User not found")
+		return nil, errors.New("User not found")
 	}
-	err = bcrypt.CompareHashAndPassword([]byte(admin.Password), []byte(adminLogin.Password))
+	err := bcrypt.CompareHashAndPassword([]byte(admin.Password), []byte(adminLogin.Password))
 	if err != nil {
+		as.logger.Zap.Info("Error comparing password", err.Error())
 		return nil, err
 	}
 	return admin, err
