@@ -2,6 +2,11 @@
 
 package generated
 
+import (
+	"go-graphql-api/model"
+	"time"
+)
+
 type AdminLogin struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -13,4 +18,28 @@ type NewAdmin struct {
 	Phone    string `json:"phone"`
 	Password string `json:"password"`
 	Role     string `json:"role"`
+}
+
+type NewUser struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Phone    string `json:"phone"`
+	Password string `json:"password"`
+	Role     string `json:"role"`
+}
+
+type Test struct {
+	Value string `json:"value"`
+}
+
+type User struct {
+	ID        model.ID   `json:"id"`
+	Name      string     `json:"name"`
+	Email     string     `json:"email"`
+	Phone     string     `json:"phone"`
+	Password  string     `json:"password"`
+	Avatar    *string    `json:"avatar"`
+	Role      string     `json:"role"`
+	CreatedAt *time.Time `json:"createdAt"`
+	UpdatedAt *time.Time `json:"updatedAt"`
 }
