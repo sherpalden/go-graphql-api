@@ -70,7 +70,6 @@ func (m AuthMiddleware) HandleAuth() gin.HandlerFunc {
 		}
 		ctx := context.WithValue(c.Request.Context(), constant.Session, &authSession)
 		c.Request = c.Request.WithContext(ctx)
-		// c.Writer = &authSession
 		c.Next()
 		return
 	}

@@ -3,8 +3,9 @@
 package generated
 
 import (
-	"go-graphql-api/model"
-	"time"
+	"fmt"
+	"io"
+	"strconv"
 )
 
 type AdminLogin struct {
@@ -12,34 +13,134 @@ type AdminLogin struct {
 	Password string `json:"password"`
 }
 
+type EmpToProjectInput struct {
+	ProjectID  string `json:"project_id"`
+	EmployeeID string `json:"employee_id"`
+	Role       Role   `json:"role"`
+}
+
 type NewAdmin struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Phone    string `json:"phone"`
 	Password string `json:"password"`
-	Role     string `json:"role"`
+	Role     Role   `json:"role"`
 }
 
-type NewUser struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Phone    string `json:"phone"`
-	Password string `json:"password"`
-	Role     string `json:"role"`
+type NewEmployee struct {
+	Name     string   `json:"name"`
+	Email    string   `json:"email"`
+	Phone    string   `json:"phone"`
+	Password string   `json:"password"`
+	Position Position `json:"position"`
+	Salary   int      `json:"salary"`
+}
+
+type NewProject struct {
+	Name  string             `json:"name"`
+	Owner *ProjectOwnerInput `json:"owner"`
+}
+
+type ProjectOwner struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Phone string `json:"phone"`
+}
+
+type ProjectOwnerInput struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Phone string `json:"phone"`
 }
 
 type Test struct {
 	Value string `json:"value"`
 }
 
-type User struct {
-	ID        model.ID   `json:"id"`
-	Name      string     `json:"name"`
-	Email     string     `json:"email"`
-	Phone     string     `json:"phone"`
-	Password  string     `json:"password"`
-	Avatar    *string    `json:"avatar"`
-	Role      string     `json:"role"`
-	CreatedAt *time.Time `json:"createdAt"`
-	UpdatedAt *time.Time `json:"updatedAt"`
+type Position string
+
+const (
+	PositionManager   Position = "MANAGER"
+	PositionTeamLead  Position = "TEAM_LEAD"
+	PositionDeveloper Position = "DEVELOPER"
+)
+
+var AllPosition = []Position{
+	PositionManager,
+	PositionTeamLead,
+	PositionDeveloper,
+}
+
+func (e Position) IsValid() bool {
+	switch e {
+	case PositionManager, PositionTeamLead, PositionDeveloper:
+		return true
+	}
+	return false
+}
+
+func (e Position) String() string {
+	return string(e)
+}
+
+func (e *Position) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = Position(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Position", str)
+	}
+	return nil
+}
+
+func (e Position) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type Role string
+
+const (
+	RoleAdmin     Role = "ADMIN"
+	RoleManager   Role = "MANAGER"
+	RoleTeamLead  Role = "TEAM_LEAD"
+	RoleDeveloper Role = "DEVELOPER"
+)
+
+var AllRole = []Role{
+	RoleAdmin,
+	RoleManager,
+	RoleTeamLead,
+	RoleDeveloper,
+}
+
+func (e Role) IsValid() bool {
+	switch e {
+	case RoleAdmin, RoleManager, RoleTeamLead, RoleDeveloper:
+		return true
+	}
+	return false
+}
+
+func (e Role) String() string {
+	return string(e)
+}
+
+func (e *Role) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = Role(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Role", str)
+	}
+	return nil
+}
+
+func (e Role) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }

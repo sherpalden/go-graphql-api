@@ -5,12 +5,15 @@ package resolver
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"go-graphql-api/gql/generated"
-	"go-graphql-api/middleware/auth"
 	"go-graphql-api/model"
 	"go-graphql-api/package/admin"
 )
+
+func (r *adminResolver) Role(ctx context.Context, obj *model.Admin) (generated.Role, error) {
+	panic(fmt.Errorf("not implemented"))
+}
 
 func (r *mutationResolver) CreateAdmin(ctx context.Context, input generated.NewAdmin) (*model.Admin, error) {
 	newAdmin := model.Admin{
@@ -18,7 +21,7 @@ func (r *mutationResolver) CreateAdmin(ctx context.Context, input generated.NewA
 		Email:    input.Email,
 		Phone:    input.Phone,
 		Password: input.Password,
-		Role:     input.Role,
+		Role:     input.Role.String(),
 	}
 	admin, err := admin.ForContext(ctx).RegisterAdmin(ctx, &newAdmin)
 	if err != nil {
@@ -45,12 +48,14 @@ func (r *mutationResolver) LoginAdmin(ctx context.Context, input generated.Admin
 }
 
 func (r *queryResolver) Admins(ctx context.Context) ([]*model.Admin, error) {
-	if authSession := auth.ForContext(ctx); authSession.Role != "super-admin" {
-		return nil, errors.New("Access Denied")
-	}
 	admins, err := admin.ForContext(ctx).GetAll(ctx)
 	if err != nil {
 		return nil, err
 	}
 	return admins, nil
 }
+
+// Admin returns generated.AdminResolver implementation.
+func (r *Resolver) Admin() generated.AdminResolver { return &adminResolver{r} }
+
+type adminResolver struct{ *Resolver }

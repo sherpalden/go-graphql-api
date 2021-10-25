@@ -1,0 +1,45 @@
+extend type Query {
+    projects: [Project!]! @hasRole(role: ADMIN)
+    project(input: String!): Project @hasRole(role: ADMIN)
+}
+
+extend type Mutation {
+    createProject(input: NewProject!): Project @hasRole(role: ADMIN)
+    addEmployeeToProject(input: EmpToProjectInput!): Project @hasRole(role: ADMIN)
+}
+
+type ProjectOwner {
+    name: String!
+    email: String!
+    phone: String!
+}
+
+
+type Project {
+  id: ID!
+  name: String!
+  owner: ProjectOwner!
+  manager: Employee
+  developers: [Employee]
+  team_lead: Employee
+  createdAt: Time
+  updatedAt: Time
+}
+
+input EmpToProjectInput {
+  project_id: String!
+  employee_id: String!
+  role: Role!
+}
+
+
+input ProjectOwnerInput {
+  name: String!
+  email: String!
+  phone: String!
+}
+
+input NewProject {
+  name: String!
+  owner: ProjectOwnerInput!
+}

@@ -1,5 +1,14 @@
+directive @hasRole(role: Role!) on FIELD_DEFINITION
+
+enum Role {
+  ADMIN
+  MANAGER
+  TEAM_LEAD
+  DEVELOPER
+}
+
 extend type Query {
-    admins: [Admin!]!
+    admins: [Admin!]! @hasRole(role: ADMIN)
 }
 
 extend type Mutation {
@@ -14,7 +23,7 @@ type Admin {
   phone: String!
   password: String!
   avatar: String
-  role: String!
+  role: Role!
   createdAt: Time
   updatedAt: Time
 }
@@ -24,7 +33,7 @@ input NewAdmin {
   email: String!
   phone: String!
   password: String!
-  role: String!
+  role: Role!
 }
 
 input AdminLogin {

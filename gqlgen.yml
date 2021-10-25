@@ -48,3 +48,7 @@ models:
     model: go-graphql-api/model.ID
   Admin:
     model: go-graphql-api/model.Admin
+  Employee:
+    model: go-graphql-api/model.Employee
+  Project:
+    model: go-graphql-api/model.Project

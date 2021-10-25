@@ -1,0 +1,29 @@
+Positions:
+-Manager
+-Team Lead
+-Developer
+
+Roles:
+-Admin
+-Manager
+-Team Lead
+-Developer
+
+Projects
+
+employees
+id
+name
+email
+password
+
+
+projects
+id
+name
+
+project_members
+project_id
+employee_id
+role
+

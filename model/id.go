@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"strconv"
 
 	"github.com/google/uuid"
 )
@@ -51,6 +52,7 @@ func (binary ID) Value() (driver.Value, error) {
 func (binary ID) MarshalJSON() ([]byte, error) {
 	s := uuid.UUID(binary)
 	str := "\"" + s.String() + "\""
+	fmt.Println("is this function called then ********", str)
 	return []byte(str), nil
 }
 
@@ -64,7 +66,7 @@ func (binary *ID) UnmarshalJSON(by []byte) error {
 // MarshalGQL implements the graphql.Marshaler interface
 func (binary ID) MarshalGQL(w io.Writer) {
 	idString := uuid.UUID(binary).String()
-	w.Write([]byte(idString))
+	w.Write([]byte(strconv.Quote(idString)))
 }
 
 // UnmarshalGQL implements the graphql.Unmarshaler interface

@@ -1,0 +1,37 @@
+extend type Query {
+    employees: [Employee!]! @hasRole(role: ADMIN)
+    employee(input: String!): Employee @hasRole(role: ADMIN)
+}
+
+extend type Mutation {
+    createEmployee(input: NewEmployee!): Employee! @hasRole(role: ADMIN)
+}
+
+enum Position {
+  MANAGER
+  TEAM_LEAD
+  DEVELOPER
+}
+
+type Employee {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String!
+  password: String!
+  avatar: String!
+  salary: Int!
+  position: Position!
+  projects: [Project!]! 
+  createdAt: Time
+  updatedAt: Time
+}
+
+input NewEmployee {
+  name: String!
+  email: String!
+  phone: String!
+  password: String!
+  position: Position!
+  salary: Int!
+}
